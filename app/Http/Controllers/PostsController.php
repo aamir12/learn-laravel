@@ -13,7 +13,8 @@ class PostsController extends Controller
      */
     public function index()
     {
-        //
+        $posts = Post::all();
+        return view('posts.index',compact('posts'));
     }
 
     /**
@@ -44,6 +45,7 @@ class PostsController extends Controller
             'title' => $request->title,
             'body'  => $request->body
         ]);
+       
         if($created){
             //redirect with flash message
             return redirect('posts/create')->with('message','Post add successfully');
@@ -59,7 +61,8 @@ class PostsController extends Controller
      */
     public function show($id)
     {
-        //
+       $post = Post::find($id);
+       return view("posts.show",compact('post'));
     }
 
     /**
@@ -70,7 +73,8 @@ class PostsController extends Controller
      */
     public function edit($id)
     {
-        //
+        $post = Post::find($id);
+        return view("posts.edit",compact('post'));
     }
 
     /**
@@ -82,7 +86,16 @@ class PostsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $post = Post::find($id);
+        $post->title = $request->title;
+        $post->body = $request->body;
+        $updated = $post->save();
+
+        if($updated){
+            return redirect('posts')->with('message','Post updated successfully');
+        }
+
+
     }
 
     /**
@@ -93,6 +106,10 @@ class PostsController extends Controller
      */
     public function destroy($id)
     {
-        //
+       $post = Post::find($id);
+       $deleted = $post->delete();
+       if($deleted){
+        return redirect('posts')->with('message','Post deleted successfully');
+       }
     }
 }
